@@ -13,6 +13,7 @@ local U1 = u32t(2654435761)
 local U2 = u32t(2246822519)
 
 local function load_le32(x, i)
+	
 	return x[i] + lshft(x[i+1], 8) + lshft(x[i+2], 16) + lshft(x[i+3], 24)
 end
 
@@ -31,17 +32,16 @@ end
 local function xxhash32(data, seed, len)
 	seed = seed or 0
 	len = len or #data
-	local p = ffi.cast("uint8_t*", data)
-
+	local p = ffi.cast("uint8_t*", data) --data ptr
 	local h32 = 0
-	local i = 0
+	local i = 0 --ptr offset
 	if len >= 16 then
 		local limit = len - 16
 		local v1 = u32t(seed + U1 + U2)
 		local v2 = u32t(seed + U2)
 		local v3 = u32t(seed)
 		local v4 = u32t(seed - U1)
-		while i < limit do
+		while i <= limit do
 			v1 = v1 + fmmul(load_le32(p, i), U2); v1 = frol(v1, 13); v1 = fmmul(v1, U1); i = i + 4
 			v2 = v2 + fmmul(load_le32(p, i), U2); v2 = frol(v2, 13); v2 = fmmul(v2, U1); i = i + 4
 			v3 = v3 + fmmul(load_le32(p, i), U2); v3 = frol(v3, 13); v3 = fmmul(v3, U1); i = i + 4
