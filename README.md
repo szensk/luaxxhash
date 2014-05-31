@@ -1,6 +1,6 @@
 luaxxhash
 ========
-A LuaJIT implementation of [xxhash](code.google.com/p/xxhash/). Doesn't require bindings. Doesn't implement digest.
+A LuaJIT implementation of [xxhash](https://code.google.com/p/xxhash/). Doesn't require bindings. Doesn't implement digest.
 
 Usage
 =====
