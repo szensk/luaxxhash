@@ -1,11 +1,8 @@
---hash.lua
 local ffi = require('ffi')
 local bit = require('bit')
-
 local rotl, xor, band, shl, shr = bit.rol, bit.bxor, bit.band, bit.lshift, bit.rshift
-local u32type = ffi.typeof("uint32_t")
 
---primess
+local u32type = ffi.typeof("uint32_t")
 local P1 = (2654435761)
 local P2 = (2246822519)
 local P3 = (3266489917)
@@ -22,7 +19,7 @@ local function xxhash32(data, seed, len)
 	seed = seed or 0
 	len = len or #data
 	local p = ffi.cast("const uint8_t*", data)
-	data = ffi.cast('const uint32_t*', p)
+	data = ffi.cast('const uint32_t*', data)
 	local h32 = 0
 	local i = 0 -- byte index
 	local n = 0 -- 4 byte index
@@ -33,17 +30,19 @@ local function xxhash32(data, seed, len)
 		v[2], v[3] = seed, seed - U1
 		while i <= limit do 
 			for j=0, 3 do
-				v[j] = v[j] + ffi.cast("uint32_t", data[n] * U2); v[j] = rotl(tonumber(v[j]), 13); v[j] = ffi.cast("uint32_t", v[j] * U1)
+				v[j] = v[j] + data[n] * U2; 
+				v[j] = rotl(v[j], 13); v[j] = v[j] * U1
 				i = i + 4; n = n + 1
 			end
 		end
-		h32 = rotl(tonumber(v[0]), 1) + rotl(tonumber(v[1]), 7) + rotl(tonumber(v[2]), 12) + rotl(tonumber(v[3]), 18)
+		h32 = rotl(v[0], 1) + rotl(v[1], 7) + rotl(v[2], 12) + rotl(v[3], 18)
 	else
 		h32 = seed + P5
 	end
 	h32 = h32 + len
 
-	while i <= len - 4 do
+	local limit = len - 4
+	while i <= limit do
 		h32 = (h32 + mmul(data[n], P3))
 		h32 = mmul(rotl(h32, 17), P4)
 		i = i + 4; n = n + 1
