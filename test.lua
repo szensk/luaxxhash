@@ -31,24 +31,31 @@ local answer = {
 }
 
 for i=1, #strt do
-	local x = xxh32(strt[i],0)
+	local x = xxh32(strt[i])
 	assert(x == answer[i], "Hash produces incorrect values: " .. i .. " Hash: " .. x)
 end
 
 local testIndex   = 10
 local testRepeat  = 10
 local hashRepeat  = 1000
-local times       = {}
-local throughputs = {}
 
-for i=1,testRepeat do
-	local start = os.clock()
-	for i=1,hashRepeat do xxh32(strt[testIndex],0) end
-	local time = os.clock() - start
-	local throughput = #strt[testIndex]*hashRepeat/time/(1024*1024)
-	table.insert(times, time)
-	table.insert(throughputs, throughput)
+function test(f)
+	local times       = {}
+	local throughputs = {}
+
+	for i=1,testRepeat do
+		local start = os.clock()
+		for i=1,hashRepeat do f(strt[testIndex]) end
+		local time = os.clock() - start
+		local throughput = #strt[testIndex]*hashRepeat/time/(1024*1024)
+		table.insert(times, time)
+		table.insert(throughputs, throughput)
+	end
+
+	print( ("min: %.3fs %.2f MB/s"):format( math.min(table.unpack(times)), math.min(table.unpack(throughputs))) )
+	print( ("max: %.3fs %.2f MB/s"):format( math.max(table.unpack(times)), math.max(table.unpack(throughputs))) )
 end
 
-print( ("min: %.3fs %.2f MB/s"):format( math.min(table.unpack(times)), math.min(table.unpack(throughputs))) )
-print( ("max: %.3fs %.2f MB/s"):format( math.max(table.unpack(times)), math.max(table.unpack(throughputs))) )
+test(xxh32)
+local ok, murmur = pcall(require, 'murmurhash3')
+if ok then test(murmur) end
