@@ -1,7 +1,7 @@
 local ffi = require('ffi')
 local bit = require('bit')
 
-local rotl, xor, band, shl, shr = bit.rol, bit.bxor, bit.band, bit.lshift, bit.rshift
+local rotl, xor, shr = bit.rol, bit.bxor, bit.rshift
 local uint32_t = ffi.typeof("uint32_t")
 
 -- Prime constants
@@ -24,7 +24,7 @@ local function xxhash32(data, len, seed)
 	local bytes = ffi.cast( 'const uint8_t*', data)
 	local words = ffi.cast('const uint32_t*', data)
 
-	local h32 = 0
+	local h32
 	if len >= 16 then
 		local limit = len - 16
 		local v = ffi.new("uint32_t[4]")

@@ -1,0 +1,25 @@
+image: alpine:latest
+
+stages:
+    - test
+
+test:
+  stage: test
+  script:
+    - apk update && apk add luajit 
+    - luajit -v
+    - luajit test.lua timing=false
+    - luajit -joff test.lua timing=false
+    
+luacheck:
+    stage: test
+    script: 
+        - apk update && apk add lua curl
+        - curl -L https://github.com/mpeterv/luacheck/archive/0.15.1.tar.gz > luacheck.tar.gz
+        - tar -xzf luacheck.tar.gz
+        - rm luacheck.tar.gz
+        - cd luacheck-0.15.1
+        - ./install.lua /usr/local
+        - cd ..
+        - luacheck luaxxhash.lua
+    
