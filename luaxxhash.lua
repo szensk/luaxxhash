@@ -1,8 +1,9 @@
 local ffi = require('ffi')
 local bit = require('bit')
 local rotl, xor, band, shl, shr = bit.rol, bit.bxor, bit.band, bit.lshift, bit.rshift
-
 local u32type = ffi.typeof("uint32_t")
+
+-- Prime constants
 local P1 = (2654435761)
 local P2 = (2246822519)
 local P3 = (3266489917)
@@ -11,8 +12,11 @@ local P5 = (374761393)
 local U1 = u32type(P1)
 local U2 = u32type(P2)
 
-local function mmul(x1, x2) --multiplication with modulo2 semantics
-	return tonumber(ffi.cast('uint32_t', ffi.cast('uint32_t', x1) * ffi.cast('uint32_t', x2)))
+-- multiplication with modulo2 semantics
+-- see https://github.com/luapower/murmurhash3
+local function mmul(a, b) 
+	local type = 'uint32_t'
+	return tonumber(ffi.cast(type, ffi.cast(type, a) * ffi.cast(type, b)))
 end
 
 local function xxhash32(data, seed, len)
@@ -30,7 +34,7 @@ local function xxhash32(data, seed, len)
 		v[2], v[3] = seed, seed - U1
 		while i <= limit do 
 			for j=0, 3 do
-				v[j] = v[j] + data[n] * U2; 
+				v[j] = v[j] + data[n] * U2
 				v[j] = rotl(v[j], 13); v[j] = v[j] * U1
 				i = i + 4; n = n + 1
 			end
