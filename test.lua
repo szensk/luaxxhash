@@ -30,6 +30,8 @@ local answer = {
 	0xFAB5AEF6,
 }
 
+assert(xxh32('abc', 3, 0x5BD1E995) == 0xBDDEB201, "Hash produces incorrect value with seed")
+
 for i=1, #strt do
 	local x = xxh32(strt[i])
 	assert(x == answer[i], "Hash produces incorrect values: " .. i .. " Hash: " .. x)
