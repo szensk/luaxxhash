@@ -43,19 +43,22 @@ function test(f)
 	local times       = {}
 	local throughputs = {}
 
+	local len = #strt[testIndex]
 	for i=1,testRepeat do
 		local start = os.clock()
-		for i=1,hashRepeat do f(strt[testIndex]) end
+		for i=1,hashRepeat do f(strt[testIndex], len) end
 		local time = os.clock() - start
-		local throughput = #strt[testIndex]*hashRepeat/time/(1024*1024)
+		local throughput = len*hashRepeat/time/(1024*1024*1024)
 		table.insert(times, time)
 		table.insert(throughputs, throughput)
 	end
 
-	print( ("min: %.3fs %.2f MB/s"):format( math.min(table.unpack(times)), math.min(table.unpack(throughputs))) )
-	print( ("max: %.3fs %.2f MB/s"):format( math.max(table.unpack(times)), math.max(table.unpack(throughputs))) )
+	print( ("min: %.3fs %.2f GB/s"):format( math.min(table.unpack(times)), math.min(table.unpack(throughputs))) )
+	print( ("max: %.3fs %.2f GB/s"):format( math.max(table.unpack(times)), math.max(table.unpack(throughputs))) )
 end
 
-test(xxh32)
-local ok, murmur = pcall(require, 'murmurhash3')
-if ok then test(murmur) end
+if not arg[1] then
+	test(xxh32)
+	local ok, murmur = pcall(require, 'murmurhash3')
+	if ok then test(murmur) end
+end
