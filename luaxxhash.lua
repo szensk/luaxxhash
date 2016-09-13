@@ -60,7 +60,7 @@ local function xxhash32(data, len, seed)
 	h32 = mmul(h32, P2)
 	h32 = xor(h32, shr(h32, 13))
 	h32 = mmul(h32, P3)
-	return xor(h32, shr(h32, 16))
+	return tonumber(ffi.cast("uint32_t", xor(h32, shr(h32, 16))))
 end
 
 return xxhash32
