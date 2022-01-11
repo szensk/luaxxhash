@@ -1,7 +1,7 @@
 package = "luaxxhash"
 version = "1.0.0-1"
 source = {
-  url = "git://github.com/szensk/luaxxhash",
+  url = "git+https://github.com/szensk/luaxxhash",
   tag = "1.0.0",
 }
 description = {
