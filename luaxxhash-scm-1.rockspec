@@ -1,7 +1,7 @@
 package = "luaxxhash"
 version = "scm-1"
 source = {
-  url = "git://github.com/szensk/luaxxhash",
+  url = "git+https://github.com/szensk/luaxxhash",
 }
 description = {
   summary = "A LuaJIT implementation of xxhash",
